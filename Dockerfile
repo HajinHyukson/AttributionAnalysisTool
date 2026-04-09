@@ -25,7 +25,7 @@ WORKDIR /app
 
 # Python dependencies
 COPY requirements.txt .
-RUN python3 -m venv /app/venv && /app/venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN python3 -m venv /app/.venv && /app/.venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # Python analytics engine
 COPY src/ src/
@@ -33,7 +33,7 @@ COPY src/ src/
 # Java JAR
 COPY --from=backend /app/java-web/target/*.jar app.jar
 
-ENV PATH="/app/venv/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH"
 ENV PORT=8082
 
 EXPOSE 8082
