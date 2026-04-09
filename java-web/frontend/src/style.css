@@ -147,6 +147,84 @@ body {
   margin: 0;
 }
 
+/* ── Ticker Picker (chips + dropdown) ── */
+.fc-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 16rem;
+  overflow-y: auto;
+  z-index: 50;
+  background: rgba(255, 253, 248, 0.98);
+  border: 1px solid rgba(93, 74, 42, 0.12);
+  border-radius: 0.75rem;
+  margin-top: 0.25rem;
+  box-shadow: 0 20px 40px rgba(18, 38, 34, 0.15);
+}
+
+.fc-picker-option {
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  transition: background 0.1s;
+}
+.fc-picker-option:hover {
+  background: oklch(var(--b2));
+}
+.fc-picker-option .ticker {
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+  color: oklch(var(--p));
+  min-width: 4rem;
+}
+.fc-picker-option .name {
+  color: oklch(var(--bc) / 0.6);
+  font-size: 0.75rem;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 0.75rem;
+  background: oklch(var(--b2));
+  border: 1px solid oklch(var(--b3));
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.fc-chip .ticker {
+  font-family: ui-monospace, monospace;
+  color: oklch(var(--p));
+}
+.fc-chip .remove {
+  cursor: pointer;
+  opacity: 0.5;
+  font-size: 0.7rem;
+}
+.fc-chip .remove:hover { opacity: 1; }
+
+.fc-chip .shares-input {
+  width: 3.5rem;
+  padding: 0.15rem 0.3rem;
+  border-radius: 0.4rem;
+  border: 1px solid oklch(var(--b3));
+  background: rgba(255, 255, 255, 0.82);
+  font-size: 0.75rem;
+  font-family: ui-monospace, monospace;
+  text-align: center;
+}
+.fc-chip .shares-input:focus {
+  outline: 2px solid oklch(var(--p) / 0.4);
+}
+
 .fc-card table {
   border-radius: 0.75rem;
 }

@@ -197,5 +197,41 @@ def correlation_regime(
     _output_json(asdict(result))
 
 
+@app.command()
+def search_stocks(
+    query: str = typer.Option(..., help="Search query (ticker or company name)"),
+    limit: int = typer.Option(20, help="Max results"),
+    cache: bool = typer.Option(True, help="Enable FMP cache"),
+    log_level: str = typer.Option("INFO", help="Log level"),
+):
+    """Search for stocks by ticker or company name."""
+    _setup_logging(log_level)
+    from .config import get_settings
+    from .fmp_client import FMPClient
+
+    settings = get_settings()
+    client = FMPClient(settings, cache_enabled=cache)
+    results = client.search_stocks(query, limit=limit)
+    _output_json(results)
+
+
+@app.command()
+def quote(
+    tickers: str = typer.Option(..., help="Comma-separated tickers"),
+    cache: bool = typer.Option(False, help="Enable FMP cache"),
+    log_level: str = typer.Option("INFO", help="Log level"),
+):
+    """Get current prices for tickers."""
+    _setup_logging(log_level)
+    from .config import get_settings
+    from .fmp_client import FMPClient
+
+    settings = get_settings()
+    client = FMPClient(settings, cache_enabled=cache)
+    ticker_list = [t.strip().upper() for t in tickers.split(",") if t.strip()]
+    prices = client.get_quotes(ticker_list)
+    _output_json(prices)
+
+
 if __name__ == "__main__":
     app()

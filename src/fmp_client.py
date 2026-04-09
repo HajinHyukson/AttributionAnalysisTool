@@ -87,6 +87,40 @@ class FMPClient:
             )
         return cleaned
 
+    def search_stocks(self, query: str, limit: int = 20) -> list[dict[str, Any]]:
+        """Search for stocks by ticker or company name via FMP search endpoint."""
+        payload = self._request_json("/search", {"query": query, "limit": limit})
+        if not isinstance(payload, list):
+            return []
+        return [
+            {
+                "ticker": item.get("symbol", ""),
+                "name": item.get("name", ""),
+                "exchange": item.get("stockExchange", ""),
+            }
+            for item in payload
+            if item.get("symbol")
+        ]
+
+    def get_quote(self, ticker: str) -> dict[str, Any]:
+        """Get real-time quote for a ticker."""
+        symbol = self.normalize_ticker(ticker)
+        payload = self._request_json("/quote", {"symbol": symbol})
+        return self._first_record(payload, label=f"quote for {symbol}")
+
+    def get_quotes(self, tickers: list[str]) -> dict[str, float]:
+        """Get current prices for multiple tickers. Returns {ticker: price}."""
+        prices: dict[str, float] = {}
+        for ticker in tickers:
+            try:
+                quote = self.get_quote(ticker)
+                price = quote.get("price", 0.0)
+                if price and price > 0:
+                    prices[self.normalize_ticker(ticker)] = float(price)
+            except Exception as e:
+                self.logger.warning("Failed to get quote for %s: %s", ticker, e)
+        return prices
+
     def get_company_profile(self, ticker: str) -> dict[str, Any]:
         symbol = self.normalize_ticker(ticker)
         payload = self._request_json("/profile", {"symbol": symbol})

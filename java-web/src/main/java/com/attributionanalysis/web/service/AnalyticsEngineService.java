@@ -53,6 +53,25 @@ public class AnalyticsEngineService {
         return runPython(args);
     }
 
+    public String runSearchStocks(String query, int limit, boolean cache) {
+        List<String> args = List.of(
+            "-m", "src.cli", "search-stocks",
+            "--query", query,
+            "--limit", Integer.toString(limit),
+            cache ? "--cache" : "--no-cache"
+        );
+        return runPython(args);
+    }
+
+    public String runQuote(String tickers, boolean cache) {
+        List<String> args = List.of(
+            "-m", "src.cli", "quote",
+            "--tickers", tickers,
+            cache ? "--cache" : "--no-cache"
+        );
+        return runPython(args);
+    }
+
     public String runCorrelationRegime(String portfolio, int years, int window, boolean cache) {
         List<String> args = List.of(
             "-m", "src.cli", "correlation-regime",
