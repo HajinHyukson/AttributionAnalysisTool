@@ -3,15 +3,6 @@ import { usePortfolioStore } from '../stores/portfolio'
 import PortfolioInput from '../components/PortfolioInput.vue'
 
 const store = usePortfolioStore()
-
-async function runAll() {
-  await Promise.all([
-    store.runRiskAttribution(),
-    store.runPerformanceAttribution(),
-    store.runStressTest(),
-    store.runCorrelationRegime(),
-  ])
-}
 </script>
 
 <template>
@@ -21,7 +12,7 @@ async function runAll() {
       <h1>Attribution Analysis Tool</h1>
     </div>
 
-    <PortfolioInput @submit="runAll" />
+    <PortfolioInput @submit="store.runAll()" />
 
     <div v-if="store.loading" class="text-center py-12">
       <span class="loading loading-spinner loading-lg text-primary"></span>
@@ -32,7 +23,7 @@ async function runAll() {
       <span>{{ store.error }}</span>
     </div>
 
-    <!-- Summary cards when results are available -->
+    <!-- Risk Attribution -->
     <div v-if="store.riskResult" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
       <div class="fc-card-compact text-center">
         <div class="text-xs font-semibold opacity-50 uppercase tracking-wider">Portfolio Vol</div>
@@ -51,7 +42,11 @@ async function runAll() {
         <div class="text-2xl font-bold mt-1">{{ store.riskResult.holdings.length }}</div>
       </div>
     </div>
+    <div v-else-if="store.riskError && !store.loading" class="alert alert-warning mb-4 text-sm">
+      <span>Risk Attribution: {{ store.riskError }}</span>
+    </div>
 
+    <!-- Performance Attribution -->
     <div v-if="store.performanceResult" class="grid grid-cols-3 gap-3 mb-6">
       <div class="fc-card-compact text-center">
         <div class="text-xs font-semibold opacity-50 uppercase tracking-wider">Portfolio Return</div>
@@ -70,7 +65,16 @@ async function runAll() {
         </div>
       </div>
     </div>
+    <div v-else-if="store.performanceError && !store.loading" class="alert alert-warning mb-4 text-sm">
+      <span>Performance Attribution: {{ store.performanceError }}</span>
+    </div>
 
+    <!-- Stress Test -->
+    <div v-if="store.stressError && !store.loading && !store.stressResult" class="alert alert-warning mb-4 text-sm">
+      <span>Stress Test: {{ store.stressError }}</span>
+    </div>
+
+    <!-- Correlation Regime -->
     <div v-if="store.correlationResult" class="fc-card-compact mb-4">
       <div class="text-xs font-semibold opacity-50 uppercase tracking-wider mb-1">Avg Correlation</div>
       <div class="text-lg font-bold">{{ store.correlationResult.current_avg_correlation.toFixed(3) }}</div>
@@ -80,6 +84,9 @@ async function runAll() {
           {{ alert.level }}: z={{ alert.z_score }} on {{ alert.date }}
         </div>
       </div>
+    </div>
+    <div v-else-if="store.correlationError && !store.loading" class="alert alert-warning mb-4 text-sm">
+      <span>Correlation Regime: {{ store.correlationError }}</span>
     </div>
 
     <!-- Placeholder when no results -->
