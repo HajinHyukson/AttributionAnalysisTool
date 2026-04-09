@@ -30,6 +30,9 @@ RUN python3 -m venv /app/.venv && /app/.venv/bin/pip install --no-cache-dir -r r
 # Python analytics engine
 COPY src/ src/
 
+# Reference data (stock universe CSV for search)
+COPY data/ data/
+
 # Java JAR
 COPY --from=backend /app/java-web/target/*.jar app.jar
 

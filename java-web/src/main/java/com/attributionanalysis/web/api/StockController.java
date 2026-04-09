@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,20 +17,6 @@ public class StockController {
 
     public StockController(AnalyticsEngineService engine) {
         this.engine = engine;
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<?> search(
-            @RequestParam String q,
-            @RequestParam(defaultValue = "20") int limit) {
-        String json = engine.runSearchStocks(q, limit, true);
-        try {
-            List<Map<String, String>> results = mapper.readValue(
-                    json, new TypeReference<>() {});
-            return ResponseEntity.ok(results);
-        } catch (Exception e) {
-            return ResponseEntity.ok(json);
-        }
     }
 
     @GetMapping("/quote")

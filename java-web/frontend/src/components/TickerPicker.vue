@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useUniverseStore } from '../stores/universe'
 
 export interface PickerItem {
   ticker: string
   name: string
   shares: number
-}
-
-interface SearchResult {
-  ticker: string
-  name: string
-  exchange: string
 }
 
 const props = withDefaults(defineProps<{
@@ -25,35 +20,30 @@ const emit = defineEmits<{
   'update:modelValue': [items: PickerItem[]]
 }>()
 
+const universeStore = useUniverseStore()
 const searchQuery = ref('')
 const dropdownOpen = ref(false)
-const searchResults = ref<SearchResult[]>([])
-const searching = ref(false)
-let debounceTimer: ReturnType<typeof setTimeout> | null = null
+onMounted(() => { universeStore.load() })
 
-async function fetchResults(query: string) {
-  if (!query || query.length < 1) {
-    searchResults.value = []
-    return
-  }
-  searching.value = true
-  try {
-    const res = await fetch(`/api/stock/search?q=${encodeURIComponent(query)}&limit=20`)
-    const data: SearchResult[] = await res.json()
-    const selectedTickers = new Set(props.modelValue.map(s => s.ticker))
-    searchResults.value = data.filter(r => !selectedTickers.has(r.ticker))
-  } catch {
-    searchResults.value = []
-  }
-  searching.value = false
-}
+const filteredResults = computed(() => {
+  const q = searchQuery.value.trim().toUpperCase()
+  if (!q || q.length < 1) return []
+  const all = universeStore.entries
+  const selectedTickers = new Set(props.modelValue.map(s => s.ticker))
+  const available = all.filter(u => !selectedTickers.has(u.ticker))
 
-function selectItem(item: SearchResult) {
+  const tickerMatch = available.filter(u => u.ticker.toUpperCase().startsWith(q))
+  const nameMatch = available.filter(u =>
+    !u.ticker.toUpperCase().startsWith(q) && u.name.toUpperCase().includes(q)
+  )
+  return [...tickerMatch, ...nameMatch].slice(0, 50)
+})
+
+function selectItem(item: { ticker: string; name: string }) {
   const updated = [...props.modelValue, { ticker: item.ticker, name: item.name, shares: 1 }]
   emit('update:modelValue', updated)
   searchQuery.value = ''
   dropdownOpen.value = false
-  searchResults.value = []
 }
 
 function removeItem(idx: number) {
@@ -68,7 +58,7 @@ function updateShares(idx: number, shares: number) {
 }
 
 function onInputFocus() {
-  if (searchResults.value.length > 0) dropdownOpen.value = true
+  if (searchQuery.value.trim()) dropdownOpen.value = true
 }
 
 function onInputBlur() {
@@ -76,17 +66,7 @@ function onInputBlur() {
 }
 
 watch(searchQuery, (q) => {
-  const trimmed = q.trim()
-  if (debounceTimer) clearTimeout(debounceTimer)
-  if (!trimmed) {
-    dropdownOpen.value = false
-    searchResults.value = []
-    return
-  }
-  debounceTimer = setTimeout(() => {
-    fetchResults(trimmed)
-    dropdownOpen.value = true
-  }, 250)
+  dropdownOpen.value = q.trim().length > 0
 })
 </script>
 
@@ -103,16 +83,13 @@ watch(searchQuery, (q) => {
              @blur="onInputBlur" />
 
       <!-- Dropdown -->
-      <div v-if="dropdownOpen && searchResults.length > 0" class="fc-picker-dropdown">
-        <div v-for="item in searchResults" :key="item.ticker"
+      <div v-if="dropdownOpen && filteredResults.length > 0" class="fc-picker-dropdown">
+        <div v-for="item in filteredResults" :key="item.ticker"
              class="fc-picker-option"
              @mousedown.prevent="selectItem(item)">
           <span class="ticker">{{ item.ticker }}</span>
           <span class="name">{{ item.name }}</span>
         </div>
-      </div>
-      <div v-else-if="dropdownOpen && searching" class="fc-picker-dropdown">
-        <div class="fc-picker-option"><span class="name">Searching...</span></div>
       </div>
     </div>
 

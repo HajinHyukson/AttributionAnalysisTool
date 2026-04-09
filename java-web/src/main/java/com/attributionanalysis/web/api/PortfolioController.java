@@ -1,10 +1,12 @@
 package com.attributionanalysis.web.api;
 
 import com.attributionanalysis.web.service.PortfolioSessionService;
+import com.attributionanalysis.web.service.UniverseService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -12,9 +14,17 @@ import java.util.Map;
 public class PortfolioController {
 
     private final PortfolioSessionService sessionService;
+    private final UniverseService universeService;
 
-    public PortfolioController(PortfolioSessionService sessionService) {
+    public PortfolioController(PortfolioSessionService sessionService,
+                               UniverseService universeService) {
         this.sessionService = sessionService;
+        this.universeService = universeService;
+    }
+
+    @GetMapping("/universe")
+    public ResponseEntity<List<String[]>> getUniverse() {
+        return ResponseEntity.ok(universeService.loadTickers());
     }
 
     @PostMapping("/save")
