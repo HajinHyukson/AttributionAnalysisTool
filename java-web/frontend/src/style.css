@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(200, 137, 62, 0.12), transparent 28rem),
+    linear-gradient(180deg, #f8f4ec 0%, #f3ede2 52%, #ede4d5 100%);
+  color: oklch(var(--bc));
+}
+
+.fc-bg-grid {
+  position: relative;
+  isolation: isolate;
+}
+.fc-bg-grid::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(23, 63, 58, 0.08), transparent 20rem),
+    radial-gradient(circle at 90% 10%, rgba(200, 137, 62, 0.08), transparent 18rem),
+    linear-gradient(rgba(35, 49, 47, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35, 49, 47, 0.025) 1px, transparent 1px);
+  background-size: auto, auto, 30px 30px, 30px 30px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.40));
+  pointer-events: none;
+  z-index: -1;
+}
+
+.fc-card {
+  border: 1px solid rgba(93, 74, 42, 0.12);
+  background: rgba(255, 253, 248, 0.84);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 60px rgba(18, 38, 34, 0.10);
+  border-radius: 1.4rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.fc-card-compact {
+  border: 1px solid rgba(93, 74, 42, 0.10);
+  background: rgba(255, 253, 248, 0.78);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(18, 38, 34, 0.06);
+  border-radius: 1.1rem;
+  padding: 0.75rem 1rem;
+}
+
+.fc-sidebar {
+  background: rgba(23, 63, 58, 0.95);
+  backdrop-filter: blur(18px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(246, 243, 234, 0.9);
+}
+
+.fc-sidebar .fc-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(246, 243, 234, 0.72);
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+}
+.fc-sidebar .fc-nav-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(246, 243, 234, 0.95);
+}
+.fc-sidebar .fc-nav-item.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-weight: 600;
+}
+
+.fc-sidebar .fc-nav-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(246, 243, 234, 0.35);
+  padding: 0.6rem 0.65rem 0.25rem;
+}
+
+.fc-sidebar .fc-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0.5rem 0;
+}
+
+.fc-brand-mark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(200, 137, 62, 0.95), rgba(122, 46, 46, 0.85));
+  color: #fff9f0;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  flex-shrink: 0;
+}
+
+.fc-brand-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: rgba(246, 243, 234, 0.95);
+}
+
+.fc-brand-subtitle {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(246, 243, 234, 0.45);
+}
+
+.fc-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.fc-section-header .fc-bar {
+  width: 0.25rem;
+  height: 1.4rem;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, oklch(var(--p)), oklch(var(--s)));
+  flex-shrink: 0;
+}
+.fc-section-header h1,
+.fc-section-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: oklch(var(--p));
+  margin: 0;
+}
+
+.fc-card table {
+  border-radius: 0.75rem;
+}
+.fc-card th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: oklch(var(--bc) / 0.5);
+}

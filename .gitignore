@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.cache/
+
+# Java
+java-web/target/
+java-web/node/
+java-web/node_modules/
+*.class
+*.jar
+
+# Frontend
+java-web/frontend/node_modules/
+java-web/frontend/dist/
+java-web/src/main/resources/static/vue/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Environment
+.env
+
+# OS
+.DS_Store
+Thumbs.db
