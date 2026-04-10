@@ -14,7 +14,8 @@ async function post<T>(url: string, body: AnalysisRequest): Promise<T> {
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }))
-    throw new Error(err.error || err.details || res.statusText)
+    const msg = err.details || err.error || res.statusText
+    throw new Error(msg)
   }
   return res.json()
 }

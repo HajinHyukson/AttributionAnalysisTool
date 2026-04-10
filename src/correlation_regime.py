@@ -60,7 +60,12 @@ def rolling_correlation_analysis(
     div_ratio_series: list[dict] = []
     pc1_series: list[dict] = []
 
-    for end_idx in range(window, len(returns) + 1):
+    # Sample every 5 trading days to keep output manageable
+    indices = list(range(window, len(returns) + 1, 5))
+    if indices and indices[-1] != len(returns):
+        indices.append(len(returns))
+
+    for end_idx in indices:
         window_returns = returns.iloc[end_idx - window:end_idx]
         dt = returns.index[end_idx - 1]
         date_str = dt.strftime("%Y-%m-%d") if hasattr(dt, "strftime") else str(dt)

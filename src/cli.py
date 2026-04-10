@@ -23,9 +23,22 @@ def _setup_logging(level: str) -> None:
     )
 
 
+def _sanitize(obj):
+    """Replace NaN/Inf with None for JSON compatibility."""
+    if isinstance(obj, float):
+        if obj != obj or obj == float("inf") or obj == float("-inf"):
+            return None
+        return obj
+    if isinstance(obj, dict):
+        return {k: _sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_sanitize(v) for v in obj]
+    return obj
+
+
 def _output_json(data: dict) -> None:
     """Print JSON result to stdout for Java to consume."""
-    print(json.dumps(data, default=str))
+    print(json.dumps(_sanitize(data), default=str))
 
 
 def _load_common(portfolio: str, years: int, benchmark: str, cache: bool):
