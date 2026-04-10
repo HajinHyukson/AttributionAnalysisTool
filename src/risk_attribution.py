@@ -38,6 +38,8 @@ def estimate_factor_model_pca(
 ) -> FactorModelResult:
     """Estimate a PCA-based factor model from the returns matrix itself."""
     clean = returns.dropna(how="any")
+    n_assets = clean.shape[1]
+    n_factors = min(n_factors, n_assets)
     values = clean.values
     mean = values.mean(axis=0)
     centered = values - mean
