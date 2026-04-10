@@ -48,7 +48,7 @@ def rolling_correlation_analysis(
     w = np.array([weights.get(t, 0.0) for t in tickers])
 
     # Current correlation matrix (full sample)
-    current_corr = returns.corr().values
+    current_corr = returns.corr().values.copy()
     np.fill_diagonal(current_corr, 1.0)
 
     # Extract upper triangle for average
@@ -71,7 +71,7 @@ def rolling_correlation_analysis(
         date_str = dt.strftime("%Y-%m-%d") if hasattr(dt, "strftime") else str(dt)
 
         # Correlation matrix for this window
-        corr = window_returns.corr().values
+        corr = window_returns.corr().values.copy()
         np.fill_diagonal(corr, 1.0)
 
         # Average pairwise correlation
